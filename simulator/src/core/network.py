@@ -2,8 +2,8 @@ import random
 
 from typing import TYPE_CHECKING, List
 
-from ..config import PT_LOSS
-from ..node.state import State
+from ..config import PT_LOSS, PROP_DELAY_RANGE
+from ..node.mode import Mode
 
 if TYPE_CHECKING:
     from ..node.node import Node
@@ -14,26 +14,34 @@ class Network:
 
     @classmethod
     def register_node(cls, node: "Node"):
+        """
+        Registers node in the network and creates mailbox for it
+        """
         cls.nodes.append(node)
         cls.mailboxes[node.id] = []
 
     @classmethod
     def broadcast(cls, sender: "Node", message):
+        """
+        Broadcasts the message from sender to all the nodes in the network
+        The message is received only by other nodes, who are in RECEIVE mode
+        Packegt has additional propagration delay as well as chance of being lost
+        """
+        yield sender.env.timeout(*PROP_DELAY_RANGE)
         for node in cls.nodes:
             if node.id == sender.id:
                 continue
-            if node.state != State.Receive:
+            if node.state != Mode.RECEIVE:
                 continue
             if random.random() > PT_LOSS:
-                cls._deliver(node, message)
+                node.env.process(node.receive(message)) 
+                cls.mailboxes[node.id].append(message)
     
     @classmethod
-    def _deliver(cls, receiver: "Node", msg):
-        receiver.env.process(receiver.receive(msg)) 
-        cls.mailboxes[receiver.id].append(msg)
-
-    @classmethod
-    def messages_received(cls, node: "Node"):
-        temp = cls.mailboxes[node.id]
+    def messages_received_from(cls, node: "Node"):
+        """
+        Returns the ids of all nodes it received the messages from during a specific period
+        """
+        ids = [msg['id'] for msg in cls.mailboxes[node.id]]
         cls.mailboxes[node.id] = []
-        return len(temp) > 0
+        return ids

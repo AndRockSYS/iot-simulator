@@ -11,7 +11,7 @@ IS_DAY_CYCLE = False # Is simulation using day cycle or charges infinitely
 
 PT_TIME = 14.89 # Time in miliseconds used for decoding an incoming packet
 PT_LOSS = 0.005 # Chance of loosing a packet
-DELAY_RANGE = (10, 50) # Packet delay range in miliseconds
+PROP_DELAY_RANGE = (10, 50) # Packet propagation delay in miliseconds
 
 # All the energy is Joules or Joules/miliseconds
 E_MAX = 8.82 # Maximum used energy
