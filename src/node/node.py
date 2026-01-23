@@ -2,8 +2,8 @@ import simpy, random, math
 
 from ..core.network import Network
 from ..core.energy_logger import EnergyLogger
-from .state import State, Package
-from .harvester import Harvester
+from .mode import State, Package
+from .capacitor import Harvester
 from .kpi import KPI
 
 from ..config import *
@@ -127,7 +127,7 @@ class Node:
         msg = {
             'type': package_type, 
             'id': self.id,
-            "to": to,
+            'to': to,
             'time': self.local_time(),
         }
 
