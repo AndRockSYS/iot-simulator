@@ -6,7 +6,6 @@ from .node.node import Node
 from .core.network import Network
 
 from .core.energy_logger import EnergyLogger
-from .core.network_topology import NetworkTopology
 
 from .config import NODES, SIM_TIME, RANGE
 
@@ -47,7 +46,6 @@ def main():
     print("Sync success rate:", (sum(acks_list) / sum(sync_tries) * 100) if avg_syncs > 0 else 0, "%")
 
     EnergyLogger.plot()
-    NetworkTopology(Network.nodes).save()
 
 if __name__ == "__main__":
     main()
