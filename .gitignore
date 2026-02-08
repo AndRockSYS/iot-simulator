@@ -2,3 +2,8 @@ venv/
 .venv/
 .idea/
 .ropeproject/
+.vscode/
+__pycache__
+
+energy_plot.png
+topology.png
